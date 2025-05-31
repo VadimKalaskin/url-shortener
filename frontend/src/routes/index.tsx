@@ -1,6 +1,4 @@
-import {AddUrlForm} from "../components/AddUrlForm";
-
-
+import { AddUrlForm } from '../components/AddUrlForm';
 
 export default function Index() {
 	return (
@@ -8,5 +6,5 @@ export default function Index() {
 			<h1 className={'text-2xl text-center'}>Сервис для сокращения ссылок</h1>
 			<AddUrlForm />
 		</main>
-	)
+	);
 }

@@ -23,34 +23,31 @@ type ApiErrorResponse = {
 type ApiResponseUnion<T> = Promise<ApiResponse<T> | ApiErrorResponse>;
 
 export async function createShortUrl(
-	dto: CreateShortUrlRequestType
+	dto: CreateShortUrlRequestType,
 ): ApiResponseUnion<{ shortUrl: string }> {
 	return axios
 		.post('/api/shorten', dto)
-		.then(res => ({ data: res.data }))
+		.then((res) => ({ data: res.data }))
 		.catch((err: AxiosError<ApiError>) => ({ error: err }));
 }
 
 export async function getUrlsList(): ApiResponseUnion<UrlType[]> {
 	return axios
 		.get<UrlType[]>('/api/list')
-		.then(res => ({ data: res.data }))
+		.then((res) => ({ data: res.data }))
 		.catch((err: AxiosError<ApiError>) => ({ error: err }));
 }
 
-export async function deleteShortUrl(alias: string): ApiResponseUnion<{}>
-{
+export async function deleteShortUrl(alias: string): ApiResponseUnion<{}> {
 	return axios
 		.delete(`/api/delete/${alias}`)
-		.then(res => ({ data: res.data }))
+		.then((res) => ({ data: res.data }))
 		.catch((err: AxiosError<ApiError>) => ({ error: err }));
 }
 
-export async function getUrlAnalytics(
-	alias: string
-): ApiResponseUnion<UrlAnalyticsResponse> {
+export async function getUrlAnalytics(alias: string): ApiResponseUnion<UrlAnalyticsResponse> {
 	return axios
 		.get<UrlAnalyticsResponse>(`/api/analytics/${alias}`)
-		.then(res => ({ data: res.data }))
+		.then((res) => ({ data: res.data }))
 		.catch((err: AxiosError<ApiError>) => ({ error: err }));
 }

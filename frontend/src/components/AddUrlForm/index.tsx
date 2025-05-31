@@ -1,26 +1,27 @@
-import { useState } from "react";
-import {createShortUrl} from "../api";
-import {toast} from "react-toastify";
+import { useState } from 'react';
+import { createShortUrl } from '../api';
+import { toast } from 'react-toastify';
 
 export const AddUrlForm = () => {
 	const [originalUrl, setOriginalUrl] = useState<string>('');
-	const [alias, setAlias] = useState<string|undefined>(undefined);
-	const [expiresAt, setExpiresAt] = useState<string|undefined>(undefined);
+	const [alias, setAlias] = useState<string | undefined>(undefined);
+	const [expiresAt, setExpiresAt] = useState<string | undefined>(undefined);
 	const [shortUrl, setShortUrl] = useState<string>('');
 
 	const onClickSubmit = async () => {
 		const res = await createShortUrl({
 			originalUrl,
 			alias,
-			expiresAt
-		})
+			expiresAt,
+		});
 
-		if(res.data?.shortUrl){
-			setShortUrl(res.data.shortUrl)
+		if (res.error) {
+			toast.error(res.error.response?.data.message);
 		} else {
-			toast.error(res.error?.response?.data.message.join(', '))
+			setShortUrl(res.data.shortUrl);
+			toast.success('Короткая ссылка успешно создана!');
 		}
-	}
+	};
 
 	return (
 		<div className="max-w-md mx-auto p-6 bg-white rounded-2xl shadow-lg flex flex-col gap-4">
@@ -57,7 +58,9 @@ export const AddUrlForm = () => {
 			</button>
 
 			{shortUrl && (
-				<div>Короткая ссылка готова: <a href={shortUrl}>{shortUrl}</a></div>
+				<div>
+					Короткая ссылка готова: <a href={shortUrl}>{shortUrl}</a>
+				</div>
 			)}
 		</div>
 	);

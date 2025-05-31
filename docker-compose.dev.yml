@@ -1,0 +1,25 @@
+services:
+    shortener-nginx:
+        volumes:
+            - ./.docker/nginx/dev.conf.d/nginx.conf:/etc/nginx/nginx.conf
+            - ./.docker/nginx/dev.conf.d/site.conf:/etc/nginx/conf.d/site.conf
+
+    shortener-backend:
+        build:
+            context: ./backend
+            dockerfile: dev.Dockerfile
+
+    shortener-frontend:
+        container_name: shortener-frontend
+        working_dir: /var/app
+        restart: unless-stopped
+        build:
+            context: ./frontend
+            dockerfile: Dockerfile
+        ports:
+            - '127.0.0.1:3000:3000'
+        networks:
+            - app-network
+        volumes:
+            - ./frontend:/var/app/
+            - /var/app/node_modules/

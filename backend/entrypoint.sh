@@ -10,6 +10,8 @@ done
 echo "✅ База данных доступна, продолжаем"
 
 # Генерация Prisma клиента
+
+npx prisma db push
 npx prisma generate
 
 # Сборка NestJS
