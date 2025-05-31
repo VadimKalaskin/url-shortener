@@ -3,8 +3,24 @@ services:
         volumes:
             - ./.docker/nginx/prod.conf.d/nginx.conf:/etc/nginx/nginx.conf
             - ./.docker/nginx/prod.conf.d/site.conf:/etc/nginx/conf.d/site.conf
+        depends_on:
+            - build-frontend
+            - shortener-backend
 
     shortener-backend:
         build:
-            context: ./backend
             dockerfile: prod.Dockerfile
+
+    build-frontend:
+        container_name: shortener-frontend-builder
+        image: node:22-alpine
+        working_dir: /var/app
+        volumes:
+            - ./frontend:/var/app
+        command: |
+            sh -c "
+              npm install &&
+              npm run build
+            "
+        networks:
+            - app-network
