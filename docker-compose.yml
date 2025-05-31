@@ -1,0 +1,68 @@
+services:
+    shortener-nginx:
+        image: nginx:latest
+        container_name: shortener-nginx
+        restart: unless-stopped
+        ports:
+            - "80:80"
+        volumes:
+            - ./.docker/nginx/dev.conf.d/nginx.conf:/etc/nginx/nginx.conf
+            - ./.docker/nginx/dev.conf.d/site.conf:/etc/nginx/conf.d/site.conf
+            - ./frontend/dist:/var/app/frontend/
+        environment:
+            TZ: Europe/Moscow
+        networks:
+            - app-network
+
+    shortener-db:
+        image: postgres:15
+        container_name: shortener-db
+        restart: unless-stopped
+        environment:
+            POSTGRES_USER: shortener
+            POSTGRES_PASSWORD: shortener
+            POSTGRES_DB: shortener
+            TZ: Europe/Moscow
+        ports:
+            - "127.0.0.1:5432:5432"
+        volumes:
+            - db_data:/var/lib/postgresql/data
+        networks:
+            - app-network
+
+
+    shortener-frontend:
+        container_name: shortener-frontend
+        working_dir: /var/app
+        restart: unless-stopped
+        build:
+            context: ./frontend
+            dockerfile: ./Dockerfile
+        ports:
+            - '127.0.0.1:3000:3000'
+        networks:
+            - app-network
+        volumes:
+            - ./frontend:/var/app/
+            - /var/app/node_modules/
+
+    shortener-backend:
+        container_name: shortener-backend
+        working_dir: /var/app
+        restart: unless-stopped
+        build:
+            context: ./backend
+            dockerfile: ./Dockerfile
+        ports:
+            - '127.0.0.1:4200:4200'
+        networks:
+            - app-network
+        volumes:
+            - ./backend:/var/app/
+
+volumes:
+    db_data:
+
+networks:
+    app-network:
+        driver: bridge
